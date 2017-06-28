@@ -20,7 +20,7 @@ public class GithubWindow : EditorWindow
 
 	private AnimBool ShowExtraFields;
 
-	[MenuItem("Triple/GitHub %l")]
+
 	public static void ShowWindow()
 	{
 		GithubWindow window = (GithubWindow)EditorWindow.GetWindow(typeof(GithubWindow), false, WINDOW_TITLE);
@@ -51,13 +51,12 @@ public class GithubWindow : EditorWindow
 				new GithubNetworkManager().GetEntryInfo(HandleGetInfoCompleted, reader.GetList().entries[i], i);
 			}
 		}
-			
+
 		ShowEntries();
 		Repaint();
 	}
 
 	//TODO: Fix styling
-	//TODO: Fix DateTime
 	private void ShowEntries()
 	{
 		for (int i = 0; i < reader.GetList().entries.Length; i++)
@@ -65,7 +64,6 @@ public class GithubWindow : EditorWindow
 			GithubEntry entry = reader.GetList().entries[i];
 
 			string buttonText = "";
-
 			if (releaseAssets[i] != null)
 			{
 				buttonText = (entry.lastUpdatedAt == releaseAssets[i].created_at) ? "UpToDate" : "Download";
@@ -78,7 +76,6 @@ public class GithubWindow : EditorWindow
 			EditorGUILayout.BeginVertical("Box");
 			EditorGUILayout.BeginHorizontal();
 		
-
 			EditorGUILayout.BeginVertical();
 			EditorGUILayout.LabelField(entry.repositoryOwnerName + " - " + entry.repositoryName);
 			EditorGUILayout.LabelField("Package updated: " + DateTime.Parse(entry.lastUpdatedAt, null, System.Globalization.DateTimeStyles.RoundtripKind));
@@ -89,6 +86,7 @@ public class GithubWindow : EditorWindow
 			{
 				Help.BrowseURL("https://github.com/" + entry.repositoryOwnerName + "/" + entry.repositoryName);
 			}
+				
 			if (GUILayout.Button(buttonText))
 			{
 				ShowExtraFields.target = true;

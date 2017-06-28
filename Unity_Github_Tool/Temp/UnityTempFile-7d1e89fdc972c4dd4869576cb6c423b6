@@ -94,10 +94,14 @@
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_64
 -define:UNITY_EDITOR_OSX
+'Assets/GithubPluginManager/Editor/Helpers/Extensions.cs'
 'Assets/GithubPluginManager/Editor/Helpers/GithubJsonReader.cs'
 'Assets/GithubPluginManager/Editor/Helpers/GithubNetworkManager.cs'
-'Assets/RTTools/Editor/RTTools/Helpers/Extensions.cs'
-'Assets/RTTools/Editor/RTTools/Windows/GithubWindow.cs'
+'Assets/GithubPluginManager/Editor/Windows/GithubWindow.cs'
+'Assets/Refactor/Editor/Helpers/ConfigFileReader.cs'
+'Assets/Refactor/Editor/Models/DownloadableItem.cs'
+'Assets/Refactor/Editor/Models/GithubItem.cs'
+'Assets/Refactor/Editor/Windows/RefactorWindow.cs'
 -r:'/Applications/Unity/Unity.app/Contents/MonoBleedingEdge/lib/mono/2.0-api/System.Runtime.Serialization.dll'
 -r:'/Applications/Unity/Unity.app/Contents/MonoBleedingEdge/lib/mono/2.0-api/System.Xml.Linq.dll'
 -r:'/Applications/Unity/Unity.app/Contents/MonoBleedingEdge/lib/mono/2.0-api/UnityScript.dll'

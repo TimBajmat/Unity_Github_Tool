@@ -6,7 +6,7 @@ using UnityEngine;
 public class GithubNetworkManager
 {
 	private const string GITHUB_API_URL = "https://api.github.com/repos/";
-	private const string GITHUB_API_URL_PREFIX = "/releases/latest";
+	private const string GITHUB_API_URL_PREFIX = "/releases/latest/";
 	private const string PACKAGE_EXTENSION = ".unitypackage";
 
 	private Action<GithubEntry, int> actionCallback;
