@@ -13,7 +13,7 @@ public class ConfigFileReader
 		config = LoadConfigFile();
 	}
 
-	public ConfigFile LoadConfigFile()
+	private static ConfigFile LoadConfigFile()
 	{
 		return JsonUtility.FromJson<ConfigFile>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath, CONFIG_FILE_NAME)));
 	}
@@ -47,7 +47,17 @@ public class ConfigFileReader
 		}
 	}
 
-	public void SaveConfigFile()
+	public void MarkItemAsFavorite(GithubItem item, bool shouldAlsoSave = false)
+	{
+		item.isFavorite = !item.isFavorite;
+
+		if(shouldAlsoSave)
+		{
+			SaveConfigFile();
+		}
+	}
+		
+	private void SaveConfigFile()
 	{
 		string json = JsonUtility.ToJson(config);
 		File.WriteAllText(Path.Combine(Application.streamingAssetsPath, CONFIG_FILE_NAME), json);

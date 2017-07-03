@@ -5,16 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public abstract class DownloadableItem
 {
-	public bool isDownloading;
-
 	protected WWW getInfoCall;
 	protected WWW getDownloadItem;
-
 	protected string infoUrl;
-	public string downloadUrl;
-
 	protected float progress;
 
+	public bool isFavorite;
+	public string downloadUrl;
 	public AnimBool showProgressBar;
 
 	public float GetDownloadProgress()
@@ -45,7 +42,6 @@ public abstract class DownloadableItem
 		if (getDownloadItem.isDone)
 		{
 			showProgressBar.target = false;
-			getDownloadItem.Dispose();
 			RemoveCallback(DownloadItemCallback);
 		}
 		else
@@ -58,7 +54,6 @@ public abstract class DownloadableItem
 	{
 		if (getInfoCall.isDone)
 		{
-			getInfoCall.Dispose();
 			RemoveCallback(DownloadUrlCallback);
 		}
 	}

@@ -3,10 +3,18 @@ using UnityEditor;
 using UnityEditor.AnimatedValues;
 using System;
 
+public enum DisplayType
+{
+	Favorites,
+	Others,
+	All
+}
+	
 public class RefactorWindow : EditorWindow
 {
 	private const string WINDOW_TITLE = "RT-Tools";
 
+	private DisplayType displayType;
 	private ConfigFileReader configReader;
 	private GithubItem[] items;
 
@@ -15,17 +23,14 @@ public class RefactorWindow : EditorWindow
 	private Texture addIcon;
 	private Texture github;
 	private Texture star;
-	private Texture cancel;
+	private Texture delete;
 
-	private string repoOwner = "";
-	private string repoName = "";
-	private bool favorite = false;
+	private string repoOwner;
+	private string repoName;
+	private bool favorite;
 
-	bool showPosition = true;
-	bool showPosition2 = true;
-
-	private AnimBool ShowInputField;
-	private GUISkin skin;
+	private AnimBool showInputField;
+	private Vector2 scrollPos;
 
 	[MenuItem("Triple/GitHub %l")]
 	private static void ShowWindow()
@@ -33,25 +38,25 @@ public class RefactorWindow : EditorWindow
 		RefactorWindow window = (RefactorWindow)EditorWindow.GetWindow(typeof(RefactorWindow), false, WINDOW_TITLE);
 		window.minSize = new Vector2(400, 400);
 		window.titleContent = new GUIContent(WINDOW_TITLE);
-		window.ShowAuxWindow();
+		window.Show();
 		window.CenterOnMainWindow();
 	}
 
 	public void OnEnable()
 	{
-		cancel = Resources.Load<Texture>("cancel");
-		star = Resources.Load<Texture>("star");
-		download = Resources.Load<Texture>("download");
-		github = Resources.Load<Texture>("Github");
 		refreshIcon = Resources.Load<Texture>("refresh");
 		addIcon = Resources.Load<Texture>("plus");
-		skin = Resources.Load<GUISkin>("GUISkin");
+
+		github = Resources.Load<Texture>("Github");
+		download = Resources.Load<Texture>("download");
+		star = Resources.Load<Texture>("star");
+		delete = Resources.Load<Texture>("delete");
 
 		configReader = new ConfigFileReader();
-		items = configReader.GetItems();
+		UpdateItems();
 
-		ShowInputField = new AnimBool(false);
-		ShowInputField.target = false;
+		showInputField = new AnimBool(false);
+		showInputField.target = false;
 	}
 
 	private void OnGUI()
@@ -62,27 +67,27 @@ public class RefactorWindow : EditorWindow
 		
 	private void ShowEntries()
 	{
-		ToolBar();
+		DrawToolBar();
+
+		scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(position.width), GUILayout.Height(position.height - 40));
 
 		foreach (GithubItem item in items)
 		{
-			if(item.markedAsFavorite)
+			if(item.isFavorite && displayType == DisplayType.Favorites || displayType == DisplayType.All)
 			{
-				if(showPosition){
-					DrawEntrie(item);
-				}
+				DrawEntries(item);
 			}
-			else 
+			else if(!item.isFavorite && displayType == DisplayType.Others || displayType == DisplayType.All) 
 			{
-				if(showPosition2){
-					DrawEntrie(item);
-				}
+				DrawEntries(item);
 			}
 		}
+			
+		EditorGUILayout.EndScrollView();
 	}
-		
-	// Replace the label with a picture we got from the internet
-	private void DrawEntrie(GithubItem item)
+    	
+	// TODO: Replace the label with a picture we got from the internet
+	private void DrawEntries(GithubItem item)
 	{
 		EditorGUILayout.BeginVertical("Box");
 		EditorGUILayout.BeginHorizontal();
@@ -110,37 +115,11 @@ public class RefactorWindow : EditorWindow
 				item.GetDownloadItem();
 			}
 		}
-
-		GUI.color = item.markedAsFavorite ? Color.yellow : Color.white;
-		if(GUILayout.Button(star, GUILayout.Width(22), GUILayout.Height(22)))
-		{
-			item.markedAsFavorite = !item.markedAsFavorite;
-			configReader.SaveConfigFile();
-		}
-		GUI.color = Color.white;
-
-		GUI.color = Color.red;
-		if(GUILayout.Button(cancel, GUILayout.Width(22), GUILayout.Height(22)))
-		{
-			if (item.markedAsFavorite &&
-				EditorUtility.DisplayDialog("Deleting package: " + item.repositoryName,
-					"This package is marked as favorite, are you sure you want to delete this package?" 
-					 , "Delete", "Cancel"))
-			{
-				configReader.DeleteItem(item);
-				configReader.SaveConfigFile();
-			}
-			else
-			{
-				configReader.DeleteItem(item);
-				configReader.SaveConfigFile();
-			}
-		}
-		GUI.color = Color.white;
-
+        	
+		DrawFavoriteButton(item);
+		DrawDeleteButton(item);
 
 		GUILayout.EndHorizontal();
-
 		EditorGUILayout.EndHorizontal();
 
 		if (EditorGUILayout.BeginFadeGroup(item.showProgressBar.faded))
@@ -156,8 +135,42 @@ public class RefactorWindow : EditorWindow
 		EditorGUILayout.EndVertical();
 	
 	}
-		
-	private void ToolBar()
+
+	private void DrawFavoriteButton(GithubItem item)
+	{
+		GUI.color = item.isFavorite ? Color.yellow : Color.white;
+		if(GUILayout.Button(star, GUILayout.Width(22), GUILayout.Height(22)))
+		{
+			configReader.MarkItemAsFavorite(item, true);
+		}
+		GUI.color = Color.white;
+	}
+
+	private void DrawDeleteButton(GithubItem item)
+	{
+		GUI.color = Color.red;
+		if(GUILayout.Button(delete, GUILayout.Width(22), GUILayout.Height(22)))
+		{
+			if (item.isFavorite &&
+				EditorUtility.DisplayDialog(
+					"Deleting package: " + item.repositoryName,
+					"This package is marked as favorite, are you sure you want to delete this package?" 
+					, "Delete", "Cancel"
+				))
+			{
+				configReader.DeleteItem(item, true);
+				UpdateItems();
+			}
+			else if(!item.isFavorite)
+			{
+				configReader.DeleteItem(item, true);
+				UpdateItems();
+			}
+		}
+		GUI.color = Color.white;
+	}
+	
+	private void DrawToolBar()
 	{
 		Rect backgroundRect = EditorGUILayout.BeginHorizontal();
 
@@ -169,10 +182,9 @@ public class RefactorWindow : EditorWindow
 		EditorGUILayout.BeginHorizontal();
 		GUILayout.Label("Github");
 		GUILayout.FlexibleSpace();
-
 		if (GUILayout.Button(addIcon, EditorStyles.toolbarButton))
 		{
-			//ShowInputField.target = true;
+			showInputField.target = true;
 		}
 		if (GUILayout.Button(refreshIcon, EditorStyles.toolbarButton))
 		{
@@ -181,69 +193,81 @@ public class RefactorWindow : EditorWindow
 				item.GetDownloadUrl();
 			}
 		}
-			
 		EditorGUILayout.EndHorizontal();
 		EditorGUILayout.EndHorizontal();
 
+		DrawCatogoryButtons();
+
+		if (EditorGUILayout.BeginFadeGroup(showInputField.faded))
+		{
+			EditorGUILayout.LabelField(string.Empty, GUI.skin.horizontalSlider);
+			EditorGUILayout.BeginVertical();
+
+			NewItemField();
+
+			EditorGUILayout.EndVertical();
+			EditorGUILayout.LabelField(string.Empty, GUI.skin.horizontalSlider);
+		}
+		EditorGUILayout.EndFadeGroup();
+	}
+
+	// TODO: Replace buttons with toggles to give better visual feedback
+	public void DrawCatogoryButtons()
+	{
 		GUILayout.BeginHorizontal();
 		if(GUILayout.Button("Favorites"))
 		{
-			showPosition = true;
-			showPosition2 = false;
+			displayType = DisplayType.Favorites;
 		}
 
 		if(GUILayout.Button("Other"))
 		{
-			showPosition = false;
-			showPosition2 = true;
+			displayType = DisplayType.Others;
 		}
 
 		if(GUILayout.Button("All"))
 		{
-			showPosition = true;
-			showPosition2 = true;
+			displayType = DisplayType.All;
 		}
 		GUILayout.EndHorizontal();
-
-		if (EditorGUILayout.BeginFadeGroup(ShowInputField.faded))
-		{
-			EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-			EditorGUILayout.BeginVertical();
-
-			NewItemInput();
-
-			EditorGUILayout.EndVertical();
-			EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-		}
-		EditorGUILayout.EndFadeGroup();
 	}
-		
-	public void NewItemInput()
+    	
+	// TODO: fix the time settings..
+	private void NewItemField()
 	{
-		repoOwner = EditorGUILayout.TextField("Repo Owner: ", repoOwner);
-		repoName = EditorGUILayout.TextField("Repo Name: ", repoName);
+		repoOwner = EditorGUILayout.TextField("Repository Owner: ", repoOwner);
+		repoName = EditorGUILayout.TextField("Repository Name: ", repoName);
 		favorite = GUILayout.Toggle(favorite, "Favorite");
 
 		GUILayout.BeginHorizontal();
-		if(GUILayout.Button("Save new Item") && repoOwner != "" && repoName != "")
+		if(GUILayout.Button("Save new Item") && repoOwner != string.Empty && repoName != string.Empty)
 		{
 			configReader.AddItem(new GithubItem(repoOwner, repoName, "0001-01-01T00:00:00Z", favorite), true);
-			ShowInputField.target = false;
-
-			repoOwner = "";
-			repoName = "";
-			favorite = false;
-
-			Repaint();
+			ResetValues();
+			UpdateItems();
 		}
 		if(GUILayout.Button("Cancel"))
 		{
-			ShowInputField.target = false;
-
-			repoOwner = "";
-			repoName = "";
-			favorite = false;
+			ResetValues();
 		}
 		GUILayout.EndHorizontal();
 	}
+
+	private void ResetValues()
+	{	
+		showInputField.target = false;
+		repoOwner = string.Empty;
+		repoName = string.Empty;
+		favorite = false;
+	}
+
+	private void UpdateItems()
+	{
+		items = configReader.GetItems();
+	}
+
+	private void OnLostFocus()
+	{
+		ResetValues();
+	}		
 }

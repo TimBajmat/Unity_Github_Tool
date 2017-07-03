@@ -13,8 +13,6 @@ public class GithubItem : DownloadableItem
 	public string repositoryName;
 	public string lastUpdatedAt;
 
-	public bool markedAsFavorite;
-
 	public string lastKnownReleaseName;
 	public string lastKnownReleaseDate;
 
@@ -23,8 +21,9 @@ public class GithubItem : DownloadableItem
 		this.repositoryOwnerName = repositoryOwnerName;
 		this.repositoryName = repositoryName;
 		this.lastUpdatedAt = lastUpdatedAt;
-		this.markedAsFavorite = markedAsFavorite;
+		isFavorite = markedAsFavorite;
 	}
+
 
 	public override void GetDownloadUrl()
 	{
@@ -53,19 +52,27 @@ public class GithubItem : DownloadableItem
 
 			System.Diagnostics.Process.Start(filePath);
 		}
-
+			
 		base.DownloadItemCallback();
 	}
 
+	// Error handling
 	protected override void DownloadUrlCallback()
 	{
-		if (getInfoCall.isDone)
+        if (getInfoCall.isDone)
 		{
-			
-			GithubJsonReleaseAsset release = JsonUtility.FromJson<GithubJsonRelease>(getInfoCall.text).assets.Where((x) => x.name.Contains(".unitypackage")).First();			
-			lastKnownReleaseName = release.name;
-			lastKnownReleaseDate = release.created_at;
-			downloadUrl = release.browser_download_url;
+            try
+            {
+                GithubJsonReleaseAsset release = JsonUtility.FromJson<GithubJsonRelease>(getInfoCall.text).assets.First(x => x.name.Contains(".unitypackage"));
+                lastKnownReleaseName = release.name;
+                lastKnownReleaseDate = release.created_at;
+                downloadUrl = release.browser_download_url;
+            }
+            catch
+            {
+                Debug.LogError("Package: " + this.repositoryName + ", is not responding." +
+                    " Please check if there are no typos in the repository names");
+            }
 		}
 
 		base.DownloadUrlCallback();
