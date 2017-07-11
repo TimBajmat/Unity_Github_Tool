@@ -8,27 +8,40 @@ namespace RTTools.Helpers
 {
 	public class ConfigFileReader
 	{
-		private const string CONFIG_FILE_NAME = "config.json";
-		private static string pathToConfig;
+        private const string CONFIG_FILE_NAME = "config.json";
 
+		private static string pathToJson;
 		private readonly ConfigFile config;
 
 		public ConfigFileReader()
 		{
-			pathToConfig = EditorPrefs.GetString("pathToJson");
+			pathToJson = EditorPrefs.GetString("pathToJson");
 			config = LoadConfigFile();
 		}
 
+        /// <summary>
+        /// Loads the config file at the given path.
+        /// </summary>
+        /// <returns>The config file.</returns>
 		private static ConfigFile LoadConfigFile()
 		{
-			return JsonUtility.FromJson<ConfigFile>(File.ReadAllText(Path.Combine(pathToConfig, CONFIG_FILE_NAME)));
+			return JsonUtility.FromJson<ConfigFile>(File.ReadAllText(Path.Combine(pathToJson, CONFIG_FILE_NAME)));
 		}
 
+        /// <summary>
+        /// Gets the items.
+        /// </summary>
+        /// <returns>The items.</returns>
 		public GithubItem[] GetItems()
 		{
 			return (config != null) ? config.entries : null;
 		}
 
+		/// <summary>
+		/// Adds the given item.
+		/// </summary>
+		/// <param name="item">GithubItem.</param>
+		/// <param name="shouldAlsoSave">If set to <c>true</c> should also save.</param>
 		public void AddItem(GithubItem item, bool shouldAlsoSave = false)
 		{
 			List<GithubItem> items = new List<GithubItem>(config.entries);
@@ -41,6 +54,11 @@ namespace RTTools.Helpers
 			}
 		}
 
+        /// <summary>
+        /// Deletes the given item.
+        /// </summary>
+        /// <param name="item">GithubItem.</param>
+        /// <param name="shouldAlsoSave">If set to <c>true</c> should also save.</param>
 		public void DeleteItem(GithubItem item, bool shouldAlsoSave = false)
 		{
 			List<GithubItem> items = new List<GithubItem>(config.entries);
@@ -53,6 +71,11 @@ namespace RTTools.Helpers
 			}
 		}
 
+        /// <summary>
+        /// Marks the given item as favorite.
+        /// </summary>
+        /// <param name="item">GithubItem.</param>
+        /// <param name="shouldAlsoSave">If set to <c>true</c> should also save.</param>
 		public void MarkItemAsFavorite(GithubItem item, bool shouldAlsoSave = false)
 		{
 			item.isFavorite = !item.isFavorite;
@@ -63,6 +86,9 @@ namespace RTTools.Helpers
 			}
 		}
 
+        /// <summary>
+        /// Saves the config file.
+        /// </summary>
 		private void SaveConfigFile()
 		{
 			string json = JsonUtility.ToJson(config);

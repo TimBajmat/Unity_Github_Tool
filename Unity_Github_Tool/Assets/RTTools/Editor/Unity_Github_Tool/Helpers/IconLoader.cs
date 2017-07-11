@@ -5,15 +5,20 @@ namespace RTTools.Helpers
 	public static class IconLoader
 	{
 		private static Texture[] textures;
-		private static string[] paths = {
-		"Icons/Refresh",
-		"Icons/Plus",
-		"Icons/Github",
-		"Icons/Download",
-		"Icons/Star",
-		"Icons/Delete"
-	};
+		private static string[] paths = 
+        {
+			"Icons/Refresh",
+			"Icons/Plus",
+			"Icons/Github",
+			"Icons/Download",
+			"Icons/Star",
+			"Icons/Delete"
+	    };
 
+        /// <summary>
+        /// Gets the textures.
+        /// </summary>
+        /// <returns>The textures.</returns>
 		public static Texture[] GetTextures()
 		{
 			textures = new Texture[paths.Length];
@@ -25,6 +30,11 @@ namespace RTTools.Helpers
 			return textures;
 		}
 
+        /// <summary>
+        /// Gets the icon.
+        /// </summary>
+        /// <returns>The icon.</returns>
+        /// <param name="path">Path.</param>
 		private static Texture GetIcon(string path)
 		{
 			return Resources.Load<Texture>(path);

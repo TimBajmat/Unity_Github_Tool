@@ -3,6 +3,9 @@ using UnityEditor;
 
 namespace RTTools.Windows
 {
+    /// <summary>
+    /// This is a preference item that shows a custom screen in the Unity Preferences.
+    /// </summary>
 	public static class Preferences
 	{
         private static string pathToJson;

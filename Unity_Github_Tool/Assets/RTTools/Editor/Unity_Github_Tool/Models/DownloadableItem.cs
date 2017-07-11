@@ -16,17 +16,27 @@ namespace RTTools.Models
 		public string downloadUrl;
 		public AnimBool showProgressBar;
 
+        /// <summary>
+        /// Gets the download progress.
+        /// </summary>
+        /// <returns>The download progress.</returns>
 		public float GetDownloadProgress()
 		{
 			return progress;
 		}
 
+        /// <summary>
+        /// Gets the download URL.
+        /// </summary>
 		public virtual void GetDownloadUrl()
 		{
 			getInfoCall = GetWWW(infoUrl);
 			AddCallback(DownloadUrlCallback);
 		}
 
+        /// <summary>
+        /// Gets the item from the url.
+        /// </summary>
 		public virtual void GetDownloadItem()
 		{
 			showProgressBar.target = true;
@@ -34,11 +44,19 @@ namespace RTTools.Models
 			AddCallback(DownloadItemCallback);
 		}
 
+        /// <summary>
+        /// Gets the www.
+        /// </summary>
+        /// <returns>The www.</returns>
+        /// <param name="url">URL.</param>
 		protected WWW GetWWW(string url)
 		{
 			return new WWW(url);
 		}
 
+        /// <summary>
+        /// Downloads the item.
+        /// </summary>
 		protected virtual void DownloadItemCallback()
 		{
 			if (getDownloadItem.isDone)
@@ -52,6 +70,9 @@ namespace RTTools.Models
 			}
 		}
 
+        /// <summary>
+        /// Downloads information from the URL.
+        /// </summary>
 		protected virtual void DownloadUrlCallback()
 		{
 			if (getInfoCall.isDone)
@@ -70,6 +91,5 @@ namespace RTTools.Models
 			EditorApplication.update += callback;
 		}
 	}
-
 }
 

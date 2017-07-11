@@ -26,12 +26,18 @@ namespace RTTools.Models
 			isFavorite = markedAsFavorite;
 		}
 
+        /// <summary>
+        /// Gets the download URL.
+        /// </summary>
 		public override void GetDownloadUrl()
 		{
 			infoUrl = GITHUB_API_URL + repositoryOwnerName + "/" + repositoryName + GITHUB_API_URL_PREFIX;
 			base.GetDownloadUrl();
 		}
 
+        /// <summary>
+        /// Gets the download item.
+        /// </summary>
 		public override void GetDownloadItem()
 		{
 			if (string.IsNullOrEmpty(downloadUrl))
@@ -42,6 +48,9 @@ namespace RTTools.Models
 			base.GetDownloadItem();
 		}
 
+		/// <summary>
+		/// Downloads the item and opens it when it is in the project.
+		/// </summary>
 		protected override void DownloadItemCallback()
 		{
 			if (getDownloadItem.isDone)
@@ -57,6 +66,9 @@ namespace RTTools.Models
 			base.DownloadItemCallback();
 		}
 
+		/// <summary>
+		/// Downloads information from the URL.
+		/// </summary>
 		protected override void DownloadUrlCallback()
 		{
 			if (getInfoCall.isDone)
@@ -84,6 +96,5 @@ namespace RTTools.Models
 	{
 		public GithubItem[] entries;
 	}
-
 }
 
