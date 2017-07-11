@@ -2,11 +2,11 @@
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using System;
-using RTTools.UI.Elements;
-using RTTools.Models;
-using RTTools.Helpers;
+using Unity_Github_Tool.UI.Elements;
+using Unity_Github_Tool.Models;
+using Unity_Github_Tool.Helpers;
 
-namespace RTTools.Windows
+namespace Unity_Github_Tool.Windows
 {
 	public class Github : EditorWindow
 	{

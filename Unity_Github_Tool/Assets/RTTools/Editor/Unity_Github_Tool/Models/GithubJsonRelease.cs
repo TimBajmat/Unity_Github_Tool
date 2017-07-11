@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RTTools.Models
+namespace Unity_Github_Tool.Models
 {
 	[Serializable]
 	public class GithubJsonRelease

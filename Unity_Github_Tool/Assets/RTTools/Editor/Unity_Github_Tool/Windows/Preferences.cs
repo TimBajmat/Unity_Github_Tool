@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace RTTools.Windows
+namespace Unity_Github_Tool.Windows
 {
     /// <summary>
     /// This is a preference item that shows a custom screen in the Unity Preferences.

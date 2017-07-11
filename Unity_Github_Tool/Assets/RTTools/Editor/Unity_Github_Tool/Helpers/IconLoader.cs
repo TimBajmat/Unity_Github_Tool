@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RTTools.Helpers
+namespace Unity_Github_Tool.Helpers
 {
 	public static class IconLoader
 	{

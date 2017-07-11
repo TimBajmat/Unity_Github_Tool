@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace RTTools.Models
+namespace Unity_Github_Tool.Models
 {
 	[System.Serializable]
 	public class GithubItem : DownloadableItem

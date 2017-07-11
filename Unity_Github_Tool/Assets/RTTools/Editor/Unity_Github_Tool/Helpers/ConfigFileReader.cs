@@ -2,9 +2,9 @@
 using System.IO;
 using UnityEngine;
 using UnityEditor;
-using RTTools.Models;
+using Unity_Github_Tool.Models;
 
-namespace RTTools.Helpers
+namespace Unity_Github_Tool.Helpers
 {
 	public class ConfigFileReader
 	{

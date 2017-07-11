@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RTTools.UI.Elements
+namespace Unity_Github_Tool.UI.Elements
 {
 	public static class ToggleButton
 	{

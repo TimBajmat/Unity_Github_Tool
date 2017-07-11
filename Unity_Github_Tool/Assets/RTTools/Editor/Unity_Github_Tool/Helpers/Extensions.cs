@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace RTTools.Helpers
+namespace Unity_Github_Tool.Helpers
 {
 	public static class Extensions
 	{

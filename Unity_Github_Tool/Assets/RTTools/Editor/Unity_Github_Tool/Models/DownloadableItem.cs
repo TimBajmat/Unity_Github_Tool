@@ -2,7 +2,7 @@
 using UnityEditor.AnimatedValues;
 using UnityEngine;
 
-namespace RTTools.Models
+namespace Unity_Github_Tool.Models
 {
 	[System.Serializable]
 	public abstract class DownloadableItem
