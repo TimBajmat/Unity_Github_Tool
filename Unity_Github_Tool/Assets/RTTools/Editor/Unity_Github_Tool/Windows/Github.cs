@@ -100,7 +100,24 @@ namespace Unity_Github_Tool.Windows
 
 			EditorGUILayout.BeginVertical();
 			EditorGUILayout.LabelField(item.repositoryOwnerName + " - " + item.repositoryName);
-			EditorGUILayout.LabelField("Package updated: " + DateTime.Parse(item.lastUpdatedAt, null, System.Globalization.DateTimeStyles.RoundtripKind));
+
+			string updated = "";
+
+			try
+			{
+				updated = "" + DateTime.Parse(item.lastUpdatedAt, null, System.Globalization.DateTimeStyles.RoundtripKind);
+			}
+			catch (Exception)
+			{
+				updated = "never";
+			}
+
+			if (string.IsNullOrEmpty(item.lastUpdatedAt))
+			{
+				updated = "never";
+			}
+
+			EditorGUILayout.LabelField("Package updated: " + updated);
 			EditorGUILayout.EndVertical();
 
 			EditorGUILayout.BeginHorizontal();

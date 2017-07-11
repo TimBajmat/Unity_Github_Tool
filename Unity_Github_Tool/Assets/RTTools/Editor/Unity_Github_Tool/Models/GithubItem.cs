@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
+using Unity_Github_Tool.Helpers;
+using Unity_Github_Tool.Windows;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,18 +28,18 @@ namespace Unity_Github_Tool.Models
 			isFavorite = markedAsFavorite;
 		}
 
-        /// <summary>
-        /// Gets the download URL.
-        /// </summary>
+		/// <summary>
+		/// Gets the download URL.
+		/// </summary>
 		public override void GetDownloadUrl()
 		{
 			infoUrl = GITHUB_API_URL + repositoryOwnerName + "/" + repositoryName + GITHUB_API_URL_PREFIX;
 			base.GetDownloadUrl();
 		}
 
-        /// <summary>
-        /// Gets the download item.
-        /// </summary>
+		/// <summary>
+		/// Gets the download item.
+		/// </summary>
 		public override void GetDownloadItem()
 		{
 			if (string.IsNullOrEmpty(downloadUrl))
@@ -59,6 +61,9 @@ namespace Unity_Github_Tool.Models
 				File.WriteAllBytes(filePath, getDownloadItem.bytes);
 
 				AssetDatabase.Refresh();
+
+				lastUpdatedAt = lastKnownReleaseDate;
+				ConfigFileSaver.SaveUpdatedTime(this);
 
 				System.Diagnostics.Process.Start(filePath);
 			}
