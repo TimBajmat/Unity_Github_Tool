@@ -38,3 +38,4 @@
 /Users/Tim/Desktop/Unity_Github_Tool/Unity_Github_Tool/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/Tim/Desktop/Unity_Github_Tool/Unity_Github_Tool/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/Tim/Desktop/Unity_Github_Tool/Unity_Github_Tool/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/Tim/Desktop/Unity_Github_Tool/Unity_Github_Tool/Temp/bin/Debug/UnityEditor.iOS.Extensions.Xcode.xml
